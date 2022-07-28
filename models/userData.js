@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema({
   name: String,
   email: String,
   totalSpending: Number,
-  records: [],
+  records: [Object],
   createdAt: {
     type: Date,
     default: new Date(),

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userRecord = mongoose.Schema({
+const expensesSchema = mongoose.Schema({
   price: Number,
   category: String,
   remarks: String,
@@ -11,6 +11,6 @@ const userRecord = mongoose.Schema({
   },
 });
 
-const UserRecord = mongoose.model("UserRecord", userRecord);
+const ExpensesData = mongoose.model("ExpensesData", expensesSchema);
 
-export default UserRecord;
+export default ExpensesData;
