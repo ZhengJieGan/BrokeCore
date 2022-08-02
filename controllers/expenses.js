@@ -1,4 +1,3 @@
-import { application } from "express";
 import mongoose from "mongoose";
 import ExpensesData from "../models/expensesData.js";
 
@@ -64,14 +63,66 @@ export const getTotalExpenses = async (req, res) => {
 };
 
 export const getTodayExpenses = async (req, res) => {
-	try {
-		const date = new Date();
-		date.setHours(0, 0, 0, 0);
-		let expensesData = await ExpensesData.find({
-			createdAt: { $gte: date },
-		});
+	var start = new Date();
+	start.setHours(start.getHours() + 8);
+	start.setHours(-16, 0, 0, 0);
 
-		res.status(200).json(expensesData);
+	var end = new Date();
+	end.setHours(23 + 8, 59, 59, 999);
+
+	try {
+		let expensesData = await ExpensesData.find({
+			createdAt: { $gte: start, $lte: end },
+		}).select("price -_id");
+
+		let total = 0;
+		for (let i = 0; i < expensesData.length; i++) {
+			total = total + expensesData[i]["price"];
+		}
+
+		res.status(200).json(total);
+	} catch (error) {
+		res.status(404).json({ message: error.message });
+	}
+};
+
+export const getEachCategoryExpenses = async (req, res) => {
+	try {
+		let expensesData = await ExpensesData.find({}).select(
+			"category price -_id"
+		);
+
+		let categoryData = await ExpensesData.find({}).distinct("category");
+
+		let data = [];
+
+		for (let i = 0; i < categoryData.length; i++) {
+			data.push([]);
+		}
+
+		function sum(total, num) {
+			return total + num;
+		}
+
+		for (let i = 0; i < expensesData.length; i++) {
+			for (let j = 0; j < categoryData.length; j++) {
+				if (expensesData[i]["category"] === categoryData[j]) {
+					data[j].push(expensesData[i]["price"]);
+				}
+			}
+		}
+
+		for (let i = 0; i < data.length; i++) {
+			data[i] = data[i].reduce(sum);
+		}
+
+		let refinedData = [];
+
+		for (let i = 0; i < data.length; i++) {
+			refinedData.push({ category: categoryData[i], total: data[i] });
+		}
+
+		res.status(200).json(refinedData);
 	} catch (error) {
 		res.status(404).json({ message: error.message });
 	}

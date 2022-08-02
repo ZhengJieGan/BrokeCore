@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-var today = new Date();
+let today = new Date();
 today.setHours(today.getHours() + 8);
 
 const expensesSchema = mongoose.Schema({
