@@ -88,10 +88,12 @@ export const getTodayExpenses = async (req, res) => {
 
 export const getEachCategoryExpenses = async (req, res) => {
 	try {
+		// Find all categories with its price
 		let expensesData = await ExpensesData.find({}).select(
 			"category price -_id"
 		);
 
+		// Find the number of cateogories and append empty array
 		let categoryData = await ExpensesData.find({}).distinct("category");
 
 		let data = [];
@@ -100,10 +102,15 @@ export const getEachCategoryExpenses = async (req, res) => {
 			data.push([]);
 		}
 
-		function sum(total, num) {
-			return total + num;
+		// Get total spending
+		let expensesTotal = await ExpensesData.find({}).select("price -_id");
+
+		let total = 0;
+		for (let i = 0; i < expensesTotal.length; i++) {
+			total = total + expensesTotal[i]["price"];
 		}
 
+		// Find the same category of spending and group them together
 		for (let i = 0; i < expensesData.length; i++) {
 			for (let j = 0; j < categoryData.length; j++) {
 				if (expensesData[i]["category"] === categoryData[j]) {
@@ -112,14 +119,34 @@ export const getEachCategoryExpenses = async (req, res) => {
 			}
 		}
 
+		// Function to sum up an array
+		function sum(total, num) {
+			return total + num;
+		}
+
 		for (let i = 0; i < data.length; i++) {
 			data[i] = data[i].reduce(sum);
 		}
 
+		// Generate random colours
+		const colors = [
+			"#007ED6",
+			"#7CDDDD",
+			"#52D726",
+			"#FFEC00",
+			"#FF7300",
+			"#FF0000",
+		];
+
+		// Creating the final result
 		let refinedData = [];
 
 		for (let i = 0; i < data.length; i++) {
-			refinedData.push({ category: categoryData[i], total: data[i] });
+			refinedData.push({
+				title: categoryData[i],
+				value: (data[i] / total) * 100,
+				color: colors[i],
+			});
 		}
 
 		res.status(200).json(refinedData);
