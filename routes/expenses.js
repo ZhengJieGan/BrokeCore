@@ -11,10 +11,10 @@ import {
 
 const router = express.Router();
 
-router.get("/", getExpenses);
-router.get("/total", getTotalExpenses);
-router.get("/today", getTodayExpenses);
-router.get("/category", getEachCategoryExpenses);
+router.get("/:id", getExpenses);
+router.get("/total/:id", getTotalExpenses);
+router.get("/today/:id", getTodayExpenses);
+router.get("/category/:id", getEachCategoryExpenses);
 router.post("/", createExpenses);
 router.patch("/:id", updateExpenses);
 router.delete("/:id", deleteExpenses);

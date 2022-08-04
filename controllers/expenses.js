@@ -2,11 +2,16 @@ import mongoose from "mongoose";
 import ExpensesData from "../models/expensesData.js";
 
 export const getExpenses = async (req, res) => {
+	const { id } = req.params;
+
 	try {
-		const expensesData = await ExpensesData.find();
+		const expensesData = await ExpensesData.find({
+			createdBy: id,
+		});
+
 		res.status(200).json(expensesData);
 	} catch (error) {
-		res.status(404).json({ message: error.message });
+		res.status(404).json({ message: error });
 	}
 };
 
@@ -48,8 +53,11 @@ export const deleteExpenses = async (req, res) => {
 };
 
 export const getTotalExpenses = async (req, res) => {
+	const { id } = req.params;
 	try {
-		let expensesData = await ExpensesData.find({}).select("price -_id");
+		let expensesData = await ExpensesData.find({ createdBy: id }).select(
+			"price -_id"
+		);
 
 		let total = 0;
 		for (let i = 0; i < expensesData.length; i++) {
@@ -63,6 +71,8 @@ export const getTotalExpenses = async (req, res) => {
 };
 
 export const getTodayExpenses = async (req, res) => {
+	const { id } = req.params;
+
 	var start = new Date();
 	start.setHours(start.getHours() + 8);
 	start.setHours(-16, 0, 0, 0);
@@ -72,6 +82,7 @@ export const getTodayExpenses = async (req, res) => {
 
 	try {
 		let expensesData = await ExpensesData.find({
+			createdBy: id,
 			createdAt: { $gte: start, $lte: end },
 		}).select("price -_id");
 
@@ -87,14 +98,18 @@ export const getTodayExpenses = async (req, res) => {
 };
 
 export const getEachCategoryExpenses = async (req, res) => {
+	const { id } = req.params;
+
 	try {
 		// Find all categories with its price
-		let expensesData = await ExpensesData.find({}).select(
+		let expensesData = await ExpensesData.find({ createdBy: id }).select(
 			"category price -_id"
 		);
 
 		// Find the number of cateogories and append empty array
-		let categoryData = await ExpensesData.find({}).distinct("category");
+		let categoryData = await ExpensesData.find({ createdBy: id }).distinct(
+			"category"
+		);
 
 		let data = [];
 
@@ -103,7 +118,9 @@ export const getEachCategoryExpenses = async (req, res) => {
 		}
 
 		// Get total spending
-		let expensesTotal = await ExpensesData.find({}).select("price -_id");
+		let expensesTotal = await ExpensesData.find({ createdBy: id }).select(
+			"price -_id"
+		);
 
 		let total = 0;
 		for (let i = 0; i < expensesTotal.length; i++) {
