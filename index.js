@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import expensesRoute from "./routes/expenses.js";
+import userRoute from "./routes/users.js";
 
 const app = express();
 process.env.TZ = "America/Martinique";
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use("/expenses", expensesRoute);
+app.use("/user", userRoute);
 
 const CONNECTION_URL =
 	"mongodb+srv://BrokeDatabase:BrokeDatabase@broke.ehjptui.mongodb.net/?retryWrites=true&w=majority";

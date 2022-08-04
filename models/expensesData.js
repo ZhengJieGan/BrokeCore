@@ -8,6 +8,7 @@ const expensesSchema = mongoose.Schema({
 	category: String,
 	remarks: String,
 	happiness: Number,
+	createdBy: String,
 	createdAt: {
 		type: Date,
 		default: today,
