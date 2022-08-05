@@ -1,12 +1,14 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserData from "../models/userData.js";
+import ExpensesData from "../models/expensesData.js";
+import mongoose from "mongoose";
 
 export const signIn = async (req, res) => {
 	const { email, password } = req.body;
 	try {
 		const existingUser = await UserData.findOne({ email });
- 
+
 		if (!existingUser)
 			return res.status(404).json({ message: "User doesn't exist" });
 
@@ -61,4 +63,17 @@ export const signUp = async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: "Something went wrong." });
 	}
+};
+
+export const deleteAccount = async (req, res) => {
+	const { id } = req.params;
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(404).send("No user with that id");
+	}
+
+	await UserData.findByIdAndRemove(id);
+
+	await ExpensesData.deleteMany({ createdBy: id });
+
+	res.json({ message: "User deleted successfully" });
 };

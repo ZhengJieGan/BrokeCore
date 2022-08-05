@@ -7,6 +7,7 @@ import {
 	updateExpenses,
 	deleteExpenses,
 	getEachCategoryExpenses,
+	deleteUserExpenses,
 } from "../controllers/expenses.js";
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.get("/category/:id", getEachCategoryExpenses);
 router.post("/", createExpenses);
 router.patch("/:id", updateExpenses);
 router.delete("/:id", deleteExpenses);
+router.delete("/terminate/:id", deleteUserExpenses);
 
 export default router;

@@ -171,3 +171,12 @@ export const getEachCategoryExpenses = async (req, res) => {
 		res.status(404).json({ message: error.message });
 	}
 };
+
+
+export const deleteUserExpenses = async (req, res) => {
+	const { id } = req.params;
+
+	
+	await ExpensesData.findByIdAndRemove(id);
+	res.json({ message: "Expense deleted successfully" });
+};

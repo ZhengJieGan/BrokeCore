@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+let today = new Date();
+today.setHours(today.getHours() + 8);
+
 const userSchema = mongoose.Schema({
 	name: { type: String, required: true },
 	email: { type: String, required: true },
@@ -7,7 +10,7 @@ const userSchema = mongoose.Schema({
 	id: String,
 	createdAt: {
 		type: Date,
-		default: new Date(),
+		default: today,
 	},
 });
 
