@@ -14,6 +14,10 @@ app.use(cors());
 app.use("/expenses", expensesRoute);
 app.use("/user", userRoute);
 
+app.get("/", (req, res) => {
+	res.send("APP IS RUNNING!");
+});
+
 const CONNECTION_URL =
 	"mongodb+srv://BrokeDatabase:BrokeDatabase@broke.ehjptui.mongodb.net/?retryWrites=true&w=majority";
 const PORT = process.env.PORT || 5000;
