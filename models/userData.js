@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema({
 	id: String,
 	createdAt: {
 		type: Date,
-		default: today,
+		default: Date(),
 	},
 });
 
